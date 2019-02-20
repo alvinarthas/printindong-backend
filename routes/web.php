@@ -11,6 +11,34 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+// $router->get('/test',['middleware' => 'custauthph', function () use ($router) {
+//     return $router->app->version();
+// }]);
+
+$router->group(['prefix' => 'api'], function () use ($router) {
+
+    // API Customer
+        // Register
+            $router->post('register',['as'=>'register','uses'=>'CustomerController@register']);
+        // Login
+        // Logout
+        // Show Profile
+    // API Vendor
+        // Register
+        // Login
+        // Show Profile
+    // API Service
+        // Get List Service
+        // Get Jenis Service
+    // API Kertas
+        // Get List Kertas
+    // API Kurir
+        // Get List Kurir
+    // API Transaksi
+        // Create Transaksi ->need api_key
+    // API Order
+        // Filter
+        // Review Order ->need api_key
+    
+
 });
