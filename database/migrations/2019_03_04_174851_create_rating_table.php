@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKertasTable extends Migration
+class CreateRatingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateKertasTable extends Migration
      */
     public function up()
     {
-        Schema::create('kertas', function (Blueprint $table) {
+        Schema::create('rating', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nama');
+            $table->integer('trx_id')->unsigned();
+            $table->foreign('trx_id')->references('id')->on('transaksi')->onDelete('cascade')->onUpdate('cascade');
+            $table->tinyInteger('nilai');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ class CreateKertasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kertas');
+        Schema::dropIfExists('rating');
     }
 }

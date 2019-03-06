@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKurirTable extends Migration
+class CreateBankTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateKurirTable extends Migration
      */
     public function up()
     {
-        Schema::create('kurir', function (Blueprint $table) {
+        Schema::create('bank', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama', 100);
             $table->string('icon', 191)->nullable();
-            $table->integer('harga');
+            $table->string('norek', 191);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateKurirTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kurir');
+        Schema::dropIfExists('bank');
     }
 }

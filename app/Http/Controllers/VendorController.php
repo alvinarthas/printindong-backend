@@ -7,9 +7,10 @@ use App\Exceptions\Handler;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-use App\Customer;
+use App\Vendor;
+use App\Vendorservice;
 
-class CustomerController extends Controller
+class VendorController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -24,10 +25,12 @@ class CustomerController extends Controller
     public function register(Request $request){
          // Validate
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:customers',
+            'email' => 'required|email|unique:vendors',
             'username' => 'required|string|max:50',
             'password' => 'required|min:8|confirmed',
             'nama' => 'required|string|max:50',
+            'count' => 'required',
+            'jenis_service[*]' => 'required'
         ]);
         
         // IF Validation fail
@@ -43,32 +46,40 @@ class CustomerController extends Controller
 
         }else{
             // validation success
-            $customer = new Customer(array(
+            $vendor = new Vendor(array(
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'email' => $request->email,
                 'nama' => $request->nama,
                 'api_token' => str_random(60),
-                'alamat' => $request->alamat,
                 'kota' => $request->kota,
-                'hp' => $request->hp,
+                'alamat' => $request->alamat,
+                'hp' =>$request->hp,
             ));
 
             // success
-            if($customer->save()){
+            if($vendor->save()){
+                for($i=1;$i<=$request->count;$i++){
+                    $vendorservice = new Vendorservice(array(
+                        'vendor_id' => $vendor->id,
+                        'jenis_service_id' =>$request->jenis_service[$i]
+                    ));
+
+                    $vendorservice->save();
+                }
                 // Response
                 $statusCode = 200;
                 $data = array(
                     'code' => '200',
                     'status' => 'success',
-                    'message' => 'Customer Berhasil dibuat, silahkan cek Email Anda di '.$request->email.' '
+                    'message' => 'Vendor Berhasil dibuat, silahkan cek Email Anda di '.$request->email.' '
                 );
             }else{
                 $statusCode = 500;
                 $data = array(
                     'code' => '500',
                     'status' => 'error',
-                    'message' => 'Customer gagal dibuat',
+                    'message' => 'Vendor gagal dibuat',
                 );
             }
         }
@@ -96,16 +107,16 @@ class CustomerController extends Controller
             );
 
         }else{
-            $customer = Customer::where('email',$request->email)->where('status',0)->first();
+            $vendor = Vendor::where('email',$request->email)->where('status',0)->first();
 
             // FOUND
-            if($customer && Hash::check($request->password, $customer->password)){
+            if($vendor && Hash::check($request->password, $vendor->password)){
                 $statusCode = 200;
                 $data = array(
                     'code' => '200',
                     'status' => 'success',
                     'message' => 'Data Customer telah ditemukan',
-                    'data' => $customer
+                    'data' => $vendor
                 );
             
             // NOT FOUND 
@@ -124,16 +135,16 @@ class CustomerController extends Controller
 
     public function profile(Request $request){
         // Find Customer by ID
-        $customer = Customer::where('username',$request->username)->first();
+        $vendor = Vendor::where('username',$request->username)->first();
 
         // Found
-            if($customer){
+            if($vendor){
                 $statusCode = 200;
                 $data = array(
                     'code' => '200',
                     'status' => 'success',
-                    'message' => 'Data customer telah ditemukan',
-                    'data' => $customer
+                    'message' => 'Data vendor telah ditemukan',
+                    'data' => $vendor
                 );
         // Not Found
             }else{
@@ -141,9 +152,30 @@ class CustomerController extends Controller
                 $data = array(
                     'code' => '500',
                     'status' => 'error',
-                    'message' => 'Data customer tidak ditemukan',
+                    'message' => 'Data vendor tidak ditemukan',
                 );
             }
+
+        return response()->json($data,$statusCode);
+    }
+
+    public function vendor_filter(Request $request){
+        $service_id = $request->service_id;
+        $jenis_service_id = $request->jenis_service_id;
+        $kota = $request->kota;
+        $harga1 = $request->harga1;
+        $harga2 = $request->harga2;
+        $rating = $request->rating;
+
+        $vendor = Vendor::filter($jenis_service,$kota,$harga1,$harga2,$rating);
+
+        $statusCode = 200;
+        $data = array(
+            'code' => '200',
+            'status' => 'success',
+            'message' => 'Data vendor telah ditemukan',
+            'data' => $vendor
+        );
 
         return response()->json($data,$statusCode);
     }

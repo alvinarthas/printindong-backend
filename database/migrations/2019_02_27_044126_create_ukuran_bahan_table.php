@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateKurirTable extends Migration
+class CreateUkuranBahanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateKurirTable extends Migration
      */
     public function up()
     {
-        Schema::create('kurir', function (Blueprint $table) {
+        Schema::create('ukuran_bahan', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nama', 100);
-            $table->string('icon', 191)->nullable();
-            $table->integer('harga');
+            $table->string('nama');
             $table->timestamps();
+            $table->integer('jenis_bahan_id')->unsigned();
+            $table->foreign('jenis_bahan_id')->references('id')->on('jenis_bahan')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
@@ -29,6 +29,6 @@ class CreateKurirTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('kurir');
+        Schema::dropIfExists('ukuran_bahan');
     }
 }

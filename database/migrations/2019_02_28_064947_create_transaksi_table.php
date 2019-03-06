@@ -19,12 +19,9 @@ class CreateTransaksiTable extends Migration
             $table->foreign('vendor_id')->references('id')->on('vendors')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('customer_id')->unsigned();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('jenis_service_id')->unsigned();
-            $table->foreign('jenis_service_id')->references('id')->on('jenis_service')->onDelete('cascade')->onUpdate('cascade');
-            $table->integer('qty');
-            $table->integer('kertas_id')->unsigned();
-            $table->foreign('kertas_id')->references('id')->on('kertas')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('kurir_id')->nullable();
             $table->string('keterangan')->nullable();
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });
     }

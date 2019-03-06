@@ -68,6 +68,10 @@ $app->routeMiddleware([
     'custauth' => App\Http\Middleware\CustAuth::class,
 ]);
 
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+ ]);
+
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers

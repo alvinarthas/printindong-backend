@@ -9,6 +9,10 @@ class Transaksi extends Model
     protected $table = 'transaksi';
 
     protected $fillable = [
-        'vendor_id','customer_id','jenis_service_id','qty','kertas_id','keterangan'
+        'vendor_id','customer_id','keterangan'
     ];
+
+    public function kurir(){
+        return $this->belongsTo('App\Kurir');
+    }
 }
