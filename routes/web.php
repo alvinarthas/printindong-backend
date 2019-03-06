@@ -11,9 +11,9 @@
 |
 */
 
-// $router->get('/test',['middleware' => 'custauthph', function () use ($router) {
-//     return $router->app->version();
-// }]);
+$router->get('/',function(){
+    return "sialan";
+});
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
