@@ -20,7 +20,9 @@ class CustomerController extends Controller
     {
         //
     }
-
+    public function index(){
+        return "sialan";
+    }
     public function register(Request $request){
          // Validate
         $validator = Validator::make($request->all(), [

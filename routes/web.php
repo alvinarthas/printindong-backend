@@ -11,9 +11,7 @@
 |
 */
 
-$router->get('/',function(){
-    return "sialan";
-});
+$router->get('/',['as'=>'custProfile','uses'=>'CustomerController@index']);
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
