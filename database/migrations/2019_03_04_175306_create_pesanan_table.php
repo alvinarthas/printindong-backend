@@ -21,6 +21,7 @@ class CreatePesananTable extends Migration
             $table->integer('qty');
             $table->integer('harga');
             $table->string('keterangan')->nullable();
+            $table->string('document')->nullable();
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
         });

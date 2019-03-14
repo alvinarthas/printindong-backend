@@ -31,6 +31,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('vendor-profile',['as'=>'venProfile','uses'=>'VendorController@profile']);
         // Filter
             $router->post('vendor-filter',['as'=>'filterVendor','uses'=>'VendorController@filter']);
+        // Vendor Service Get
+            $router->post('vendor-service',['as'=>'vendorService','uses'=>'VendorController@vendorService']);
     // API Master Data
         // Get List Service
             $router->get('service-get',['as'=>'getService','uses'=>'ServiceController@getService']);
@@ -55,7 +57,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->put('kurir-trxupdate',['as'=>'updateTrxKurir','middleware'=>'custauth','uses'=>'TransaksiController@updateTrxKurir']);
         // Update Pesanan
             $router->put('pesanan-update',['as'=>'updatePesanan','middleware'=>'custauth','uses'=>'TransaksiController@updatePesanan']);
-        // Update Pesanan
+        // Transaksi Total
             $router->get('transaksi-total',['as'=>'totalTransaksi','middleware'=>'custauth','uses'=>'TransaksiController@totalTransaksi']);
     // API Order
         // Review Order ->need api_key

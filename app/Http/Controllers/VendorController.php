@@ -43,6 +43,9 @@ class VendorController extends Controller
                 'message' => 'Silahkan cek kelengkapan form anda',
                 'data' => $validator->errors(),
             );
+            
+            // Send Response
+            return response()->json($data,$statusCode);
 
         }else{
             // validation success
@@ -57,35 +60,42 @@ class VendorController extends Controller
                 'hp' =>$request->hp,
             ));
 
-            // success
-            if($vendor->save()){
-                for($i=1;$i<=$request->count;$i++){
+            try{
+                $vendor->save();
+
+                for($i=0;$i<$request->count;$i++){
                     $vendorservice = new Vendorservice(array(
                         'vendor_id' => $vendor->id,
-                        'jenis_service_id' =>$request->jenis_service[$i]
+                        'jenis_service_id' =>$request->jenis_service[$i],
+                        'harga' => 10000
                     ));
 
                     $vendorservice->save();
                 }
-                // Response
+                
+                // response
                 $statusCode = 200;
                 $data = array(
                     'code' => '200',
+                    'anjing' => 'enggak',
                     'status' => 'success',
-                    'message' => 'Vendor Berhasil dibuat, silahkan cek Email Anda di '.$request->email.' '
+                    'message' => 'Vendor Berhasil dibuat'
                 );
-            }else{
+                
+            }catch(\Exception $e){
                 $statusCode = 500;
                 $data = array(
                     'code' => '500',
-                    'status' => 'error',
-                    'message' => 'Vendor gagal dibuat',
+                    'status ' => 'error',
+                    'anjing' => 'eya',
+                    'message' => $e,
                 );
+                
             }
         }
+                        // Send Response
+                return response()->json($data,$statusCode);
 
-        // Send Response
-        return response()->json($data,$statusCode);
     }
 
     public function login(Request $request){
@@ -159,7 +169,7 @@ class VendorController extends Controller
         return response()->json($data,$statusCode);
     }
 
-    public function vendor_filter(Request $request){
+    public function filter(Request $request){
         $service_id = $request->service_id;
         $jenis_service_id = $request->jenis_service_id;
         $kota = $request->kota;
@@ -167,7 +177,25 @@ class VendorController extends Controller
         $harga2 = $request->harga2;
         $rating = $request->rating;
 
-        $vendor = Vendor::filter($jenis_service,$kota,$harga1,$harga2,$rating);
+        $vendor = Vendor::filter($jenis_service_id,$kota,$harga1,$harga2,$rating);
+
+        $statusCode = 200;
+        $data = array(
+            'code' => '200',
+            'status' => 'success',
+            'message' => 'Data vendor telah ditemukan',
+            'data' => $vendor
+        );
+
+        return response()->json($data,$statusCode);
+    }
+
+    public function vendorService(Request $request){
+        $vendor_id = $request->vendor_id;
+        $service_id = $request->service_id;
+        $jenis_service_id = $request->jenis_service_id;
+
+        $vendor = Vendor::vendorService($vendor_id,$service_id,$jenis_service_id);
 
         $statusCode = 200;
         $data = array(

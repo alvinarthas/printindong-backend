@@ -17,12 +17,66 @@ class JenisServiceTableSeeder extends Seeder
         // Insert
         DB::table('jenis_service')->insert(array(
             array(
+                'service_id' => 1,
+                'nama' => 'Banner'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Flyer'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Spanduk'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Vinyl'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Poster'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Sticker'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Hangtag'
+            ),
+            array(
+                'service_id' => 2,
+                'nama' => 'Bowl Lunch'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Lunch Box'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Dus Box'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Standing Pouch'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Plastik Inner'
+            ),
+            array(
+                'service_id' => 1,
+                'nama' => 'Plastik Outer'
+            ),
+            array(
                 'service_id' => 4,
                 'nama' => 'Kertas'
-            ),array(
+            ),
+            array(
                 'service_id' => 4,
                 'nama' => 'Sticker'
-            ),array(
+            ),
+            array(
                 'service_id' => 4,
                 'nama' => 'Vinyl'
             )

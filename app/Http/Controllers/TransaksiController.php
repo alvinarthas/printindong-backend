@@ -29,11 +29,11 @@ class TransaksiController extends Controller
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
             'vendor_id' => 'required',
-            'kurir_id' => 'required',
             'jenis_service_id[*]' => 'required',
             'qty[*]' => 'required',
             'harga[*]' => 'required',
-            'count' => 'required'
+            'count' => 'required',
+            'document[*]' => 'required'
         ]);
         
         if ($validator->fails()) {
@@ -56,7 +56,7 @@ class TransaksiController extends Controller
                 $transaksi->save();
 
                 // INSERT PESANAN
-                for($i=1;$i<=$request->count;$i++){
+                for($i=0;$i<$request->count;$i++){
                     $pesanan = new Pesanan(array(
                         'trx_id' => $transaksi->id,
                         'jenis_service_id' => $request->jenis_service_id[$i],
@@ -66,6 +66,7 @@ class TransaksiController extends Controller
                         'qty' => $request->qty[$i],
                         'harga' => $request->harga[$i],
                         'keterangan' => $request->keterangan[$i],
+                        'document' => $request->document[$i],
                         'status' => 1,
                     ));
 
@@ -150,8 +151,7 @@ class TransaksiController extends Controller
 
     public function getPesanan(Request $request){
         $trx_id = $request->trx_id;
-
-        $pesanan = Pesanan::where('trx_id')->get();
+        $pesanan = Pesanan::getPesanan($trx_id);
 
         if($pesanan){
             $statusCode = 200;
@@ -190,9 +190,10 @@ class TransaksiController extends Controller
             );
 
         }else{
-            $pesanan = Transaksi::where('id',$request->pesanan_id)->first();
-            if($pesanan){
-                $pesanan->update(request()->all());
+            $pesanan = Pesanan::where('id',$request->pesanan_id)->first();
+
+            try{
+                $pesanan->update($request->all());
                     // Response
 
                     $statusCode = 200;
@@ -202,12 +203,12 @@ class TransaksiController extends Controller
                         'message' => 'Update Pesanan Berhasil'
                     );
 
-            }else{
+            }catch(\Exception $e){
                 $statusCode = 500;
                 $data = array(
                     'code' => '500',
                     'status' => 'error',
-                    'message' => 'Pesanan tidak ditemukan'
+                    'message' => $e
                 );
             }
         }
@@ -225,14 +226,19 @@ class TransaksiController extends Controller
         
         $harga = 0;
         foreach($pesanans as $pesanan){
-            $harga += $pesanan->harga;
+            $harga += ($pesanan->harga*$pesanan->qty);
         }
 
         $trx = collect();
-        $trx->put('total_harga',$harga);
-        $trx->put('biaya_kirim',$transaksi->kurir->harga);
-        $total = $harga+$transaksi->kurir->harga;
-        $trx->put('total_harga',$total);
+        $trx->put('subtotal',$harga);
+        if($transaksi->kurir_id == NULL || $transaksi->kurir_id == ''){
+            $harga_kurir = 0;
+        }else{
+            $harga_kurir = $transaksi->kurir->harga;
+        }
+        $trx->put('biaya_kirim',$harga_kurir);
+        $total = $harga+$harga_kurir;
+        $trx->put('total_biaya',$total);
 
         $statusCode = 200;
         $data = array(
